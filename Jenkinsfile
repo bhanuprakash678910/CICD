@@ -15,7 +15,7 @@ pipeline {
   {
        agent { label 'demo' }
        steps { 
-          git branch: 'master', url: 'https://gitlab.com/bhanuprakashece410/CICD.git'
+          git branch: 'master', url: 'https://github.com/bhanuprakash678910/CICD.git'
        }
   }
 
@@ -127,16 +127,16 @@ pipeline {
   }
 
   stage ('Deploy'){
-    agent {label 'pilot'}
+    agent {label 'slave1'}
 	when {environment name: 'BUILDME', value: 'yes'}
     steps {
-        git branch: 'master', url: 'https://gitlab.com/bhanuprakashece410/CICD.git'
+        git branch: 'master', url: 'https://github.com/bhanuprakash678910/CICD.git'
         step([$class: 'DockerComposeBuilder', dockerComposeFile: 'docker-compose.yml', option: [$class: 'StartAllServices'], useCustomDockerComposeFile: false])
     }          
   }
   
   stage ('Smoke Test'){
-    agent {label 'pilot'}
+    agent {label 'slave1'}
     when {environment name: 'BUILDME', value: 'yes'}
     steps {
       sh "sleep 10; chmod +x runsmokes.sh; ./runsmokes.sh"
